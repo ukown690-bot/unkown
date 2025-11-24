@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fitness Mindset - BMI & Ideal Weight Calculator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #0d0f1a;
+        color: white;
+        padding: 20px;
+        max-width: 600px;
+        margin: auto;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .box {
+        background: #1a1f2e;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-top: 10px;
+    }
+    input, select, button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: none;
+    }
+    button {
+        background: #00ffaa;
+        color: black;
+        font-weight: bold;
+        margin-top: 15px;
+        cursor: pointer;
+    }
+    .result {
+        font-size: 20px;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+<h1>Fitness Mindset - BMI & Ideal Weight</h1><div class="box">
+    <label>Choose Units</label>
+    <select id="units">
+        <option value="metric">Metric (kg, cm)</option>
+        <option value="imperial">Imperial (lbs, ft, in)</option>
+    </select>
+</div><div class="box" id="metricBox">
+    <label>Weight (kg)</label>
+    <input type="number" id="kg" placeholder="Enter weight in kg"><label>Height (cm)</label>
+<input type="number" id="cm" placeholder="Enter height in cm">
+
+</div><div class="box" id="imperialBox" style="display:none;">
+    <label>Weight (lbs)</label>
+    <input type="number" id="lbs" placeholder="Enter weight in lbs"><label>Height (feet)</label>
+<input type="number" id="ft" placeholder="Feet">
+
+<label>Height (inches)</label>
+<input type="number" id="inch" placeholder="Inches">
+
+</div><button onclick="calculateBMI()">Calculate BMI</button> <button onclick="resetAll()">Reset</button>
+
+<div class="box">
+    <div class="result">BMI: <span id="bmi">—</span></div>
+    <div class="result">Category: <span id="category">—</span></div>
+    <div class="result">Ideal Weight Range: <span id="ideal">—</span></div>
+</div><script>
+const units = document.getElementById("units");
+const metricBox = document.getElementById("metricBox");
+const imperialBox = document.getElementById("imperialBox");
+
+units.addEventListener("change", () => {
+    if (units.value === "metric") {
+        metricBox.style.display = "block";
+        imperialBox.style.display = "none";
+    } else {
+        metricBox.style.display = "none";
+        imperialBox.style.display = "block";
+    }
+});
+
+function calculateBMI() {
+    let bmi = 0;
+    let heightM = 0;
+
+    if (units.value === "metric") {
+        let kg = parseFloat(document.getElementById("kg").value);
+        let cm = parseFloat(document.getElementById("cm").value);
+        if (!kg || !cm) return alert("Please enter valid metric values.");
+        heightM = cm / 100;
+        bmi = kg / (heightM * heightM);
+    } else {
+        let lbs = parseFloat(document.getElementById("lbs").value);
+        let ft = parseFloat(document.getElementById("ft").value);
+        let inch = parseFloat(document.getElementById("inch").value);
+        if (!lbs || !ft) return alert("Please enter valid imperial values.");
+        let totalInch = (ft * 12) + inch;
+        heightM = totalInch * 0.0254;
+        let kg = lbs * 0.453592;
+        bmi = kg / (heightM * heightM);
+    }
+
+    bmi = bmi.toFixed(1);
+    document.getElementById("bmi").textContent = bmi;
+
+    let category = "";
+    if (bmi < 18.5) category = "Underweight";
+    else if (bmi < 24.9) category = "Normal";
+    else if (bmi < 29.9) category = "Overweight";
+    else category = "Obese";
+
+    document.getElementById("category").textContent = category;
+
+    // Ideal weight range
+    let min = 18.5 * heightM * heightM;
+    let max = 24.9 * heightM * heightM;
+    document.getElementById("ideal").textContent = min.toFixed(1) + " kg - " + max.toFixed(1) + " kg";
+}
+
+function resetAll() {
+    document.getElementById("kg").value = "";
+    document.getElementById("cm").value = "";
+    document.getElementById("lbs").value = "";
+    document.getElementById("ft").value = "";
+    document.getElementById("inch").value = "";
+
+    document.getElementById("bmi").textContent = "—";
+    document.getElementById("category").textContent = "—";
+    document.getElementById("ideal").textContent = "—";
+}
+</script></body>
+</html
